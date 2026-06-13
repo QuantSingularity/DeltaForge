@@ -13,8 +13,8 @@ from typing import Dict, List, Optional, Tuple
 
 import numpy as np
 import pandas as pd
+from ai_models.scoring.signal_scorer import SignalScorer
 
-from ...ai_models.scoring.signal_scorer import SignalScorer
 from ..risk.risk_manager import RiskManager
 from ..strategies.engine import StrategyEngine
 

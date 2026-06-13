@@ -351,7 +351,7 @@ SUPPORTED_EXCHANGES = {
     "kucoin": ccxt.kucoin,
     "bingx": ccxt.bingx,
     "bitget": ccxt.bitget,
-    "gateio": ccxt.gateio,
+    "gateio": ccxt.gate,
     "mexc": ccxt.mexc,
     "kraken": ccxt.kraken,
     # Bitflex handled via BitflexAdapter below

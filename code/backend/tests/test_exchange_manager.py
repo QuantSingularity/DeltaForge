@@ -101,7 +101,7 @@ class TestExchangeManagerInit:
 
     def test_bitflex_uses_adapter(self):
         with patch(
-            "code.backend.exchanges.bitflex_adapter.BitflexAdapter.load_markets",
+            "backend.exchanges.bitflex_adapter.BitflexAdapter.load_markets",
             return_value={},
         ):
             mgr = ExchangeManager("bitflex", "key", "secret", sandbox=True)
@@ -113,7 +113,7 @@ class TestExchangeManagerInit:
         mock_inst.load_markets.return_value = {}
         mock_cls.return_value = mock_inst
         with patch.dict(
-            "code.backend.exchanges.exchange_manager.SUPPORTED_EXCHANGES",
+            "backend.exchanges.exchange_manager.SUPPORTED_EXCHANGES",
             {"mockex": mock_cls},
         ):
             mgr = ExchangeManager("mockex", "key", "secret", sandbox=False)
@@ -121,7 +121,7 @@ class TestExchangeManagerInit:
 
     def test_get_free_balance_fallback(self):
         with patch(
-            "code.backend.exchanges.bitflex_adapter.BitflexAdapter.load_markets",
+            "backend.exchanges.bitflex_adapter.BitflexAdapter.load_markets",
             return_value={},
         ):
             mgr = ExchangeManager("bitflex", "key", "secret", sandbox=True)
@@ -131,7 +131,7 @@ class TestExchangeManagerInit:
 
     def test_fetch_ohlcv_returns_none_on_failure(self):
         with patch(
-            "code.backend.exchanges.bitflex_adapter.BitflexAdapter.load_markets",
+            "backend.exchanges.bitflex_adapter.BitflexAdapter.load_markets",
             return_value={},
         ):
             mgr = ExchangeManager("bitflex", "key", "secret", sandbox=True)

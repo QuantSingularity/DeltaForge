@@ -14,6 +14,20 @@ import ccxt
 
 logger = logging.getLogger("DeltaForge.Exchange")
 
+# ─────────────────────────────────────────────────────────────────────
+# SUPPORTED EXCHANGES (ccxt only — Bitflex uses BitflexAdapter directly)
+# ─────────────────────────────────────────────────────────────────────
+SUPPORTED_EXCHANGES = {
+    "binance": ccxt.binance,
+    "bybit": ccxt.bybit,
+    "okx": ccxt.okx,
+    "kucoin": ccxt.kucoin,
+    "bingx": ccxt.bingx,
+    "bitget": ccxt.bitget,
+    "gateio": ccxt.gate,
+    "mexc": ccxt.mexc,
+    "kraken": ccxt.kraken,
+}
 
 # ─────────────────────────────────────────────────────────────────────
 # BITFLEX DIRECT REST ADAPTER

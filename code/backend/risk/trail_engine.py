@@ -2,7 +2,7 @@
 
 import logging
 import time
-from dataclasses import field
+from dataclasses import dataclass, field
 from typing import Dict, Optional, Tuple
 
 import pandas as pd
@@ -10,6 +10,7 @@ import pandas as pd
 logger = logging.getLogger("DeltaForge.TrailEngine")
 
 
+@dataclass
 class TrailState:
     symbol: str
     side: str  # 'buy' | 'sell'
@@ -47,7 +48,7 @@ class TrailEngine:
             sl_order_id=sl_order_id,
         )
         key = f"{symbol}_{side}_{entry_price}"
-        self._trail_states[key] = state
+        self._states[key] = state
         logger.info(
             f"Trail registered: {symbol} {side} @ {entry_price} | SL {sl_price}"
         )
@@ -64,7 +65,7 @@ class TrailEngine:
         trail_type = self.trail_cfg.get("type", "atr")
         updates = {}
 
-        for key, state in list(self._trail_states.items()):
+        for key, state in list(self._states.items()):
             sym = state.symbol
             price = current_prices.get(sym)
             if price is None:
@@ -90,7 +91,7 @@ class TrailEngine:
                 old_sl = state.current_sl
                 state.current_sl = new_sl
                 updates[key] = (old_sl, new_sl)
-                logger.debug(f"Trail update {sym}: SL {old_sl:.6f} → {new_sl:.6f}")
+                logger.debug(f"Trail update {sym}: SL {old_sl:.6f} -> {new_sl:.6f}")
 
         return updates
 
@@ -134,15 +135,21 @@ class TrailEngine:
 
         return None
 
+    def _compute_atr(self, df: Optional[pd.DataFrame], period: int = 14) -> float:
+        """Compute Average True Range over the given DataFrame."""
+        if df is None or len(df) < period + 1:
+            return 0.0
+        hl = df["high"] - df["low"]
+        hc = (df["high"] - df["close"].shift()).abs()
+        lc = (df["low"] - df["close"].shift()).abs()
+        tr = pd.concat([hl, hc, lc], axis=1).max(axis=1)
+        return float(tr.rolling(period).mean().iloc[-1])
+
     def remove_trade(self, key: str):
-        self._trail_states.pop(key, None)
+        self._states.pop(key, None)
 
     def get_all_trail_states(self) -> Dict[str, TrailState]:
-        return self._trail_states
-
-    # ─────────────────────────────────────────────────────────────
-    # DOLLAR RISK VALIDATION
-    # ─────────────────────────────────────────────────────────────
+        return self._states
 
     def trail_enabled(self) -> bool:
         return self.trail_cfg.get("enabled", True)
