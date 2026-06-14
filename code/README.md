@@ -1,10 +1,11 @@
-# DeltaForge — Code
+# DeltaForge
 
 ## Structure
 
 ```
 code/
-├── conftest.py            # Shared pytest fixtures (base_config, _make_ohlcv)
+├── conftest.py            # Shared pytest fixtures (base_config, make_ohlcv)
+├── testkit.py             # Importable synthetic-OHLCV helper for tests
 │
 ├── ai_models/             # ML / AI layer
 │   ├── ml_engine.py       # Backward-compat shim (re-exports all public classes)
@@ -16,7 +17,7 @@ code/
 │   │   └── online_learner.py      # SGD online updates from trade outcomes
 │   ├── features/
 │   │   └── feature_extractor.py   # 10-feature engineering (RSI, MACD, BB, …)
-│   └── tests/                     # 39 AI/ML tests
+│   └── tests/                     # 39 AI/ML tests (all passing)
 │
 └── backend/               # Core trading engine
     ├── main.py            # Bot lifecycle + main scan loop
@@ -64,16 +65,25 @@ code/
     │   ├── telegram.py    # Telegram channel
     │   └── webhook.py     # HTTP POST webhook channel
     │
-    └── tests/             # 250+ backend tests across 9 test files
+    ├── api/               # FastAPI server backing the web dashboard
+    │   ├── server.py      # REST + WebSocket endpoints, serves built frontend
+    │   ├── feed.py        # Live feed engine (real strategy + ML stack)
+    │   └── state.py       # Thread-safe shared dashboard state
+    │
+    └── tests/             # backend tests across 9 test files
 ```
 
 ## Quick Start
 
 ```bash
-# From project root:
-python -m backend               # Live trading  (pythonpath = code)
+# From project root (pythonpath = code, set in pytest.ini and at runtime):
+python -m backend               # Live trading
 python -m backend --backtest    # Backtest all pairs
 python -m backend --sandbox     # Paper trading
+python -m backend --retrain     # Retrain ML from recorded outcomes
+
+# Dashboard API (serves the web-frontend build at http://localhost:8000):
+uvicorn backend.api.server:app --reload
 ```
 
 ## Running Tests
@@ -85,6 +95,8 @@ pytest -q                          # Quiet summary
 pytest code/backend/tests/ -v      # Backend tests only
 pytest code/ai_models/tests/ -v    # AI/ML tests only
 ```
+
+The full suite is **404 tests** (365 backend + 39 AI/ML) and all pass.
 
 ## Package Imports
 

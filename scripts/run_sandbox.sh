@@ -6,4 +6,4 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 cd "$PROJECT_ROOT"
 
 echo "[DeltaForge] Starting sandbox (paper trading) mode..."
-python3 -m code.backend --sandbox "$@"
+PYTHONPATH=code python3 -m backend --sandbox "$@"

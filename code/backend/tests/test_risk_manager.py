@@ -1,6 +1,7 @@
 """Comprehensive tests for RiskManager, TrailEngine, and PositionSizer."""
 
 import pytest
+from testkit import make_ohlcv as _make_ohlcv
 
 from ..risk.risk_manager import RiskManager
 from ..risk.trail_engine import TrailEngine

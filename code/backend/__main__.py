@@ -1,4 +1,4 @@
-"""Entry point: python -m code.backend [args]"""
+"""Entry point: python -m backend [args]"""
 
 from .main import main
 

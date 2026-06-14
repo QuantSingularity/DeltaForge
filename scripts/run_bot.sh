@@ -12,4 +12,4 @@ if [ -n "$EXCHANGE" ]; then
 fi
 
 echo "[DeltaForge] Starting live trading bot..."
-python3 -m code.backend $EXCHANGE_ARG "$@"
+PYTHONPATH=code python3 -m backend $EXCHANGE_ARG "$@"

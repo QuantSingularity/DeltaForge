@@ -1,8 +1,11 @@
 """DeltaForge — AnomalyDetector: Z-score + spread + volume spike auto-stop."""
 
+import logging
 from typing import Tuple
 
 import numpy as np
+
+logger = logging.getLogger("DeltaForge.AI.Anomaly")
 
 
 class AnomalyDetector:
@@ -16,10 +19,12 @@ class AnomalyDetector:
         self._px_buf = []
         self._vol_buf = []
         self.buf_size = 100
+        self._count = 0
 
     def update(self, price: float, volume: float):
         self._px_buf.append(price)
         self._vol_buf.append(volume)
+        self._count += 1
         if len(self._px_buf) > self.buf_size:
             self._px_buf.pop(0)
         if len(self._vol_buf) > self.buf_size:

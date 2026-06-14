@@ -1,11 +1,14 @@
 """DeltaForge — SignalScorer: logistic regression signal confidence (0-100%)."""
 
 import json
+import logging
 import os
 import time
 
 import numpy as np
 import pandas as pd
+
+logger = logging.getLogger("DeltaForge.AI.SignalScorer")
 
 WEIGHTS_FILE = "ml_weights.json"
 
@@ -47,7 +50,8 @@ class SignalScorer:
         self.weights = self.DEFAULT_WEIGHTS.copy()
         self.bias = self.DEFAULT_BIAS
         self.path = weights_path
-        self.load_weights()
+        # Loading is explicit (call load_weights()) so constructing a scorer
+        # never silently depends on a file in the working directory.
 
     def sigmoid(self, x: float) -> float:
         return 1.0 / (1.0 + np.exp(-np.clip(x, -20, 20)))
@@ -172,6 +176,20 @@ class SignalScorer:
         return feat
 
     # ── OFFLINE TRAINING ────────────────────────────────────────────
+    def _compute_loss(self, X: np.ndarray, y: np.ndarray) -> float:
+        """Binary cross-entropy of the current model on raw feature matrix X.
+
+        Uses the same linear form as :meth:`train` (``z = bias + X·weights``)
+        so the value is directly comparable before and after training.
+        """
+        X = np.asarray(X, dtype=float)
+        y = np.asarray(y, dtype=float)
+        z = self.bias + X.dot(self.weights)
+        pred = 1.0 / (1.0 + np.exp(-np.clip(z, -20, 20)))
+        return float(
+            -np.mean(y * np.log(pred + 1e-9) + (1 - y) * np.log(1 - pred + 1e-9))
+        )
+
     def train(
         self, X: np.ndarray, y: np.ndarray, lr: float = 0.01, epochs: int = 1000
     ) -> dict:
@@ -203,7 +221,6 @@ class SignalScorer:
 
         self.weights = weights
         self.bias = bias
-        self.save_weights()
         acc = float(((pred >= 0.5).astype(int) == y).mean())
         logger.info(f"Training complete | Accuracy: {acc:.2%}")
         return {"accuracy": acc, "epochs": epochs}
@@ -235,27 +252,29 @@ class SignalScorer:
         logger.debug(f"Online update: label={label} pred={pred:.3f} err={err:.4f}")
 
     # ── PERSIST ─────────────────────────────────────────────────────
-    def save_weights(self):
+    def save_weights(self, path: str = None):
+        target = path or self.path
         data = {
             "weights": self.weights.tolist(),
             "bias": self.bias,
             "updated": time.strftime("%Y-%m-%d %H:%M:%S"),
         }
-        with open(self.path, "w") as f:
+        with open(target, "w") as f:
             json.dump(data, f, indent=2)
-        logger.info(f"Weights saved to {self.path}")
+        logger.info(f"Weights saved to {target}")
 
-    def load_weights(self):
-        if not os.path.exists(self.path):
-            logger.info(f"No weights file found at {self.path}, using defaults")
+    def load_weights(self, path: str = None):
+        target = path or self.path
+        if not os.path.exists(target):
+            logger.info(f"No weights file found at {target}, using defaults")
             return
         try:
-            with open(self.path) as f:
+            with open(target) as f:
                 data = json.load(f)
             self.weights = np.array(data["weights"])
             self.bias = float(data["bias"])
             logger.info(
-                f"Weights loaded from {self.path} (updated {data.get('updated','')})"
+                f"Weights loaded from {target} (updated {data.get('updated','')})"
             )
         except Exception as e:
             logger.warning(f"Could not load weights: {e}")

@@ -6,4 +6,4 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 cd "$PROJECT_ROOT"
 
 echo "[DeltaForge] Retraining ML model from trade history..."
-python3 -m code.backend --retrain "$@"
+PYTHONPATH=code python3 -m backend --retrain "$@"

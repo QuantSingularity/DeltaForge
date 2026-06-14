@@ -1,0 +1,6 @@
+# Copy to terraform.tfvars and adjust for your account.
+project            = "deltaforge"
+environment        = "dev"
+region             = "eu-central-1"
+node_instance_type = "t3.large"
+node_desired       = 2

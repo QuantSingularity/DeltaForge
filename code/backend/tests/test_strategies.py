@@ -9,6 +9,7 @@ Each strategy is tested for:
 """
 
 import pytest
+from testkit import make_ohlcv as _make_ohlcv
 
 from ..strategies.engine import StrategyEngine
 from ..strategies.indicators import SIGNAL_BUY, SIGNAL_NONE, SIGNAL_SELL

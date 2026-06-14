@@ -12,4 +12,4 @@ if [ -n "$EXCHANGE" ]; then
 fi
 
 echo "[DeltaForge] Running walk-forward backtest..."
-python3 -m code.backend --backtest $EXCHANGE_ARG "$@"
+PYTHONPATH=code python3 -m backend --backtest $EXCHANGE_ARG "$@"

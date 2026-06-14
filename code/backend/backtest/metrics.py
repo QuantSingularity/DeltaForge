@@ -59,7 +59,7 @@ class BacktestMetrics:
 
     @property
     def avg_loss(self) -> float:
-        return float(self.losses.mean()) if len(self.losses) else 0.0
+        return float(abs(self.losses.mean())) if len(self.losses) else 0.0
 
     @property
     def profit_factor(self) -> float:

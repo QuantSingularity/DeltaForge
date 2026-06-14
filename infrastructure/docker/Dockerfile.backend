@@ -1,0 +1,38 @@
+# DeltaForge backend: trading engine + FastAPI API.
+# Multi-stage keeps the runtime image lean.
+FROM python:3.12-slim AS base
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PYTHONPATH=/app/code
+
+WORKDIR /app
+
+# System deps for scientific Python wheels.
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends build-essential curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python deps first for better layer caching.
+COPY code/backend/requirements.txt /app/requirements.txt
+COPY infrastructure/docker/requirements-api.txt /app/requirements-api.txt
+RUN pip install -r /app/requirements.txt -r /app/requirements-api.txt
+
+# Copy source.
+COPY code /app/code
+
+# Non-root runtime user.
+RUN useradd --create-home --uid 10001 deltaforge \
+    && chown -R deltaforge:deltaforge /app
+USER deltaforge
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+    CMD curl -fsS http://127.0.0.1:8000/api/health || exit 1
+
+# Default command serves the API. Override to run the bot loop:
+#   docker run ... python -m backend            (live trading)
+#   docker run ... python -m backend --backtest (walk-forward)
+CMD ["uvicorn", "backend.api.server:app", "--host", "0.0.0.0", "--port", "8000"]

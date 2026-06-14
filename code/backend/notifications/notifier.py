@@ -17,7 +17,7 @@ class NotificationEvent:
         self.event_type = event_type
         self.message = message
         for k, v in kwargs.items():
-            if hasattr(self, k):
+            if k in self.__slots__:
                 setattr(self, k, v)
         # fill missing slots with None
         for s in self.__slots__:

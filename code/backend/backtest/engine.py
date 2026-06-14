@@ -376,6 +376,9 @@ class BacktestEngine:
     ) -> BTResult:
         res = BTResult(symbol=symbol, timeframe=tf)
         res.total_trades = len(trades)
+        # Always expose the equity curve (starts at initial capital) even when
+        # a segment produced no trades.
+        res.equity_curve = list(equity) if equity else [init_cap]
         if not trades:
             return res
 

@@ -1,6 +1,7 @@
 """Tests for BacktestEngine and BTResult."""
 
 import pytest
+from testkit import make_ohlcv as _make_ohlcv
 
 from ..backtest.engine import BacktestEngine, BTResult
 

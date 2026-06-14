@@ -2,11 +2,11 @@
 DeltaForge Crypto Bot — Main Entry Point v1.2
 ─────────────────────────────────────────────────────────────────────
 Usage:
-  python -m code.backend                   # live trading
-  python -m code.backend --backtest        # walk-forward backtest
-  python -m code.backend --sandbox         # paper trading
-  python -m code.backend --exchange bybit  # override exchange
-  python -m code.backend --retrain         # retrain ML from outcomes
+  python -m backend                   # live trading
+  python -m backend --backtest        # walk-forward backtest
+  python -m backend --sandbox         # paper trading
+  python -m backend --exchange bybit  # override exchange
+  python -m backend --retrain         # retrain ML from outcomes
 ─────────────────────────────────────────────────────────────────────
 """
 
@@ -18,11 +18,11 @@ from typing import Dict, List, Optional
 
 import numpy as np
 import pandas as pd
+from ai_models.anomaly.anomaly_detector import AnomalyDetector
+from ai_models.features.feature_extractor import FeatureExtractor
+from ai_models.learning.online_learner import OnlineLearner
+from ai_models.scoring.signal_scorer import SignalScorer
 
-from ..ai_models.anomaly.anomaly_detector import AnomalyDetector
-from ..ai_models.features.feature_extractor import FeatureExtractor
-from ..ai_models.learning.online_learner import OnlineLearner
-from ..ai_models.scoring.signal_scorer import SignalScorer
 from .backtest.engine import BacktestEngine
 from .backtest.metrics import BacktestMetrics
 
@@ -75,6 +75,7 @@ class DeltaForgeBot:
         self.risk = RiskManager(cfg)
         self.strategies = StrategyEngine(cfg)
         self.scorer = SignalScorer()
+        self.scorer.load_weights()  # restore persisted weights if present
         self.extractor = FeatureExtractor()
         self.anomaly = AnomalyDetector(cfg)
         self.learner = OnlineLearner(self.scorer)
@@ -328,7 +329,7 @@ class DeltaForgeBot:
         htf_map = {
             "15m": ["1h", "4h"],
             "1h": ["4h", "1d"],
-            "4h": ["1d", "1d"],
+            "4h": ["1d"],
             "1d": [],
         }
         htfs = htf_map.get(tf, [])

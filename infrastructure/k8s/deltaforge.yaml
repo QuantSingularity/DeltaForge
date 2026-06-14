@@ -1,0 +1,197 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: deltaforge
+  labels:
+    app.kubernetes.io/name: deltaforge
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: deltaforge-config
+  namespace: deltaforge
+data:
+  DELTAFORGE_MODE: "sandbox"
+---
+# API keys / secrets are injected from a Secret, never committed.
+# Create with:
+#   kubectl create secret generic deltaforge-secrets -n deltaforge \
+#     --from-literal=EXCHANGE_API_KEY=... --from-literal=EXCHANGE_API_SECRET=...
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deltaforge-backend
+  namespace: deltaforge
+  labels:
+    app: deltaforge-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: deltaforge-backend
+  template:
+    metadata:
+      labels:
+        app: deltaforge-backend
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+      containers:
+        - name: backend
+          image: deltaforge/backend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: deltaforge-config
+          env:
+            - name: EXCHANGE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: deltaforge-secrets
+                  key: EXCHANGE_API_KEY
+                  optional: true
+            - name: EXCHANGE_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: deltaforge-secrets
+                  key: EXCHANGE_API_SECRET
+                  optional: true
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 8000
+            initialDelaySeconds: 20
+            periodSeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: deltaforge-backend
+  namespace: deltaforge
+spec:
+  selector:
+    app: deltaforge-backend
+  ports:
+    - port: 8000
+      targetPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deltaforge-frontend
+  namespace: deltaforge
+  labels:
+    app: deltaforge-frontend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: deltaforge-frontend
+  template:
+    metadata:
+      labels:
+        app: deltaforge-frontend
+    spec:
+      containers:
+        - name: frontend
+          image: deltaforge/frontend:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
+            limits:
+              cpu: "250m"
+              memory: "128Mi"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: deltaforge-frontend
+  namespace: deltaforge
+spec:
+  selector:
+    app: deltaforge-frontend
+  ports:
+    - port: 80
+      targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: deltaforge-ingress
+  namespace: deltaforge
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: deltaforge.internal
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: deltaforge-backend
+                port:
+                  number: 8000
+          - path: /ws
+            pathType: Prefix
+            backend:
+              service:
+                name: deltaforge-backend
+                port:
+                  number: 8000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: deltaforge-frontend
+                port:
+                  number: 80
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: deltaforge-backend-hpa
+  namespace: deltaforge
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: deltaforge-backend
+  minReplicas: 2
+  maxReplicas: 6
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70

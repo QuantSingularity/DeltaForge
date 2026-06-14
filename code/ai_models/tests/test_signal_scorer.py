@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+from testkit import make_ohlcv as _make_ohlcv
 
 from ..features.feature_extractor import N_FEATURES, FeatureExtractor
 from ..scoring.signal_scorer import SignalScorer

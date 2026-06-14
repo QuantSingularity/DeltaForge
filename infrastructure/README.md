@@ -47,3 +47,52 @@ mql4/
 | Dollar          | `TRAIL_DOLLAR`     | `InpTrailType=2` |
 | Time-tightening | `TRAIL_TIME`       | `InpTrailType=3` |
 | Volatility      | `TRAIL_VOLATILITY` | `InpTrailType=4` |
+
+## Containers & Orchestration
+
+```
+docker/
+├── Dockerfile.backend        # Trading engine + FastAPI API (python:3.12-slim)
+├── Dockerfile.frontend       # Vite build served by nginx
+├── nginx.conf                # SPA + /api + /ws reverse proxy
+├── requirements-api.txt      # FastAPI / uvicorn / pydantic
+└── docker-compose.yml        # Full local stack
+
+k8s/
+└── deltaforge.yaml           # Namespace, ConfigMap, Deployments, Services,
+                              # Ingress, HorizontalPodAutoscaler
+
+terraform/
+├── main.tf                   # ECR repos + VPC + EKS cluster + Secrets Manager
+├── variables.tf
+├── outputs.tf
+└── terraform.tfvars.example
+```
+
+### Local (Docker Compose)
+
+```bash
+docker compose -f infrastructure/docker/docker-compose.yml up --build
+# Dashboard: http://localhost:8080
+# API docs:  http://localhost:8000/docs
+```
+
+### Kubernetes
+
+```bash
+# Provide exchange credentials (never committed)
+kubectl create secret generic deltaforge-secrets -n deltaforge \
+  --from-literal=EXCHANGE_API_KEY=... --from-literal=EXCHANGE_API_SECRET=...
+
+kubectl apply -f infrastructure/k8s/deltaforge.yaml
+```
+
+### Provisioning (Terraform)
+
+```bash
+cd infrastructure/terraform
+cp terraform.tfvars.example terraform.tfvars   # edit for your account
+terraform init
+terraform plan
+terraform apply
+```
