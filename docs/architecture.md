@@ -121,7 +121,7 @@ DeltaForge/
 │   ├── run_backtest.sh   ← walk-forward backtest
 │   └── retrain_ml.sh     ← retrain ML from trade history
 │
-└── web-frontend/
+└── frontend/
     └── README.md         ← planned React dashboard
 ```
 

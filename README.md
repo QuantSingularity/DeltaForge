@@ -11,7 +11,7 @@ DeltaForge/
 ├── code/                      # Python trading core + AI/ML + FastAPI API
 │   ├── backend/               # Engine, strategies, risk, backtest, exchanges, api
 │   └── ai_models/             # Signal scoring, anomaly detection, online learning
-├── web-frontend/              # React + Vite + Tailwind dashboard
+├── frontend/              # React + Vite + Tailwind dashboard
 ├── infrastructure/
 │   ├── mql4/ · mql5/          # MetaTrader Expert Advisors (forex)
 │   ├── docker/                # Dockerfiles, compose, nginx
@@ -50,7 +50,7 @@ PYTHONPATH=code python -m backend --sandbox
 
 # 3. Run the dashboard (API + UI)
 PYTHONPATH=code uvicorn backend.api.server:app --reload     # http://localhost:8000
-#   (or `cd web-frontend && npm install && npm run dev` for hot-reload UI)
+#   (or `cd frontend && npm install && npm run dev` for hot-reload UI)
 
 # 4. Full stack in containers
 docker compose -f infrastructure/docker/docker-compose.yml up --build
@@ -60,5 +60,3 @@ docker compose -f infrastructure/docker/docker-compose.yml up --build
 
 Internal, in-house trading operations only. No resale or commercial
 redistribution. See `LICENSE`.
-EOF
-echo "root README created"

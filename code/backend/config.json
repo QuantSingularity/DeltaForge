@@ -2,7 +2,7 @@
   "_comment": "DeltaForge Agentic AI Bot Configuration \u2014 All settings are hot-reloaded dynamically",
   "bot_running": true,
   "auto_stop_on_anomaly": true,
-  "min_ml_score": 60.0,
+  "min_ml_score": 58,
   "initial_capital": 10000.0,
   "exchange": {
     "id": "binance",
@@ -23,11 +23,20 @@
     "api_secret": "YOUR_API_SECRET",
     "passphrase": "",
     "trade_type": "spot",
-    "_trade_type_options": ["spot", "margin"],
+    "_trade_type_options": [
+      "spot",
+      "margin"
+    ],
     "sandbox": false,
     "bitflex_base_url": "https://api.bitflex.com"
   },
-  "symbols": ["BTC/USDT", "ETH/USDT", "SOL/USDT", "BNB/USDT", "XRP/USDT"],
+  "symbols": [
+    "BTC/USDT",
+    "ETH/USDT",
+    "SOL/USDT",
+    "BNB/USDT",
+    "XRP/USDT"
+  ],
   "risk": {
     "max_loss_per_trade": 50.0,
     "max_lot_size": 1.0,
@@ -43,7 +52,13 @@
   "trail_stop": {
     "enabled": true,
     "type": "atr",
-    "_type_options": ["atr", "percent", "dollar", "time", "volatility"],
+    "_type_options": [
+      "atr",
+      "percent",
+      "dollar",
+      "time",
+      "volatility"
+    ],
     "atr_multiplier": 2.0,
     "atr_period": 14,
     "percent": 1.5,

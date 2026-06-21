@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# DeltaForge — format/lint checks for Python and the frontend.
+# DeltaForge - format/lint checks for Python and the frontend.
 # Pass --fix to auto-format instead of just checking.
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -24,9 +24,9 @@ else
 fi
 
 # Frontend lint (if configured)
-if command -v npm >/dev/null 2>&1 && [ -d web-frontend/node_modules ]; then
+if command -v npm >/dev/null 2>&1 && [ -d frontend/node_modules ]; then
     echo "[DeltaForge] Linting frontend..."
-    (cd web-frontend && npm run lint) || echo "(frontend lint reported issues)"
+    (cd frontend && npm run lint) || echo "(frontend lint reported issues)"
 fi
 
 echo "[DeltaForge] Lint complete."

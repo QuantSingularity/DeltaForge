@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# DeltaForge — run the web dashboard API (serves the built frontend if present)
+# DeltaForge - run the web dashboard API (serves the built frontend if present)
 set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"

@@ -82,7 +82,7 @@ python -m backend --backtest    # Backtest all pairs
 python -m backend --sandbox     # Paper trading
 python -m backend --retrain     # Retrain ML from recorded outcomes
 
-# Dashboard API (serves the web-frontend build at http://localhost:8000):
+# Dashboard API (serves the frontend build at http://localhost:8000):
 uvicorn backend.api.server:app --reload
 ```
 

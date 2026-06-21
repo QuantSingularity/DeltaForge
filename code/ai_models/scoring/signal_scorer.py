@@ -22,8 +22,12 @@ FEATURE_NAMES = [
     "vol_ratio",  # Current vol / avg vol (20) - 1
     "ema_slope",  # EMA20 slope normalised
     "momentum_norm",  # Momentum (14) - 100 / 10
-    "confluence",  # Strategy confluence 0..1  ← strongest feature
+    "confluence",  # Strategy confluence 0..1, strongest feature
 ]
+
+# Number of features the scorer expects. extract_features() fills indices
+# 0..9 and score()/train() operate on a vector of this length.
+N_FEATURES = len(FEATURE_NAMES)
 
 
 class SignalScorer:

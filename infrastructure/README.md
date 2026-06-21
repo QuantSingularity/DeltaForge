@@ -32,7 +32,7 @@ mql4/
 
 1. Copy `mql4/DeltaForge_EA.mq4` → `<MT4 Data>/MQL4/Experts/`
 2. Compile in MetaEditor (F7)
-3. Attach to chart — panel appears automatically
+3. Attach to chart and the panel appears automatically
 
 ## Supported Timeframes
 

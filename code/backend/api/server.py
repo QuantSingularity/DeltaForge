@@ -27,11 +27,12 @@ from typing import List
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from ..core.config import ConfigManager
+from .auth import UserStore, _load_secret, build_auth_router
 from .feed import FeedEngine
 from .state import AppState
 
@@ -94,14 +95,26 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
+    # Authentication (register / login / me). Registered before the static
+    # frontend mount so the API routes always take precedence.
+    auth_store = UserStore()
+    auth_secret = _load_secret()
+    app.include_router(build_auth_router(auth_store, auth_secret))
+
     @app.on_event("startup")
     async def _startup():
         feed.start()
-        asyncio.create_task(_broadcaster())
+        # Hold a reference to the broadcaster task. Without one, the event
+        # loop only keeps a weak reference and the task may be garbage
+        # collected mid-flight.
+        app.state.broadcaster_task = asyncio.create_task(_broadcaster())
 
     @app.on_event("shutdown")
     async def _shutdown():
         feed.stop()
+        task = getattr(app.state, "broadcaster_task", None)
+        if task is not None:
+            task.cancel()
 
     async def _broadcaster():
         while True:
@@ -212,10 +225,30 @@ def create_app() -> FastAPI:
 
     # ── static frontend (served when built) ───────────────────────────
     dist = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.dirname(_HERE))), "web-frontend", "dist"
+        os.path.dirname(os.path.dirname(os.path.dirname(_HERE))), "frontend", "dist"
     )
     if os.path.isdir(dist):
-        app.mount("/", StaticFiles(directory=dist, html=True), name="frontend")
+        # Serve hashed build assets directly.
+        assets_dir = os.path.join(dist, "assets")
+        if os.path.isdir(assets_dir):
+            app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+        index_file = os.path.join(dist, "index.html")
+
+        # SPA fallback: any non-API GET path serves a real file when one exists
+        # (favicon, etc.) and otherwise index.html, so a hard refresh on a deep
+        # link such as /dashboard does not 404. Registered last, so the /api
+        # routes and the /assets mount above take precedence.
+        @app.get("/{full_path:path}")
+        def spa(full_path: str):
+            # Unknown API paths should 404 as API, not fall through to the SPA.
+            if full_path.startswith("api/") or full_path == "api":
+                return JSONResponse({"detail": "Not Found"}, status_code=404)
+            if full_path:
+                candidate = os.path.join(dist, full_path)
+                if os.path.isfile(candidate):
+                    return FileResponse(candidate)
+            return FileResponse(index_file)
+
     else:
 
         @app.get("/")
@@ -224,7 +257,7 @@ def create_app() -> FastAPI:
                 {
                     "service": "DeltaForge API",
                     "docs": "/docs",
-                    "note": "Build the web-frontend (npm run build) to serve the dashboard here.",
+                    "note": "Build the frontend (npm run build) to serve the dashboard here.",
                 }
             )
 

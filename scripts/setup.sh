@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# DeltaForge — one-time setup: Python deps, API deps, config, and (optionally)
+# DeltaForge - one-time setup: Python deps, API deps, config, and (optionally)
 # the frontend dependencies.
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -24,15 +24,15 @@ pip install pytest --quiet
 CONFIG="code/backend/config.json"
 if [ ! -f "$CONFIG" ]; then
     cp code/backend/config.json.example "$CONFIG"
-    echo "Created $CONFIG — edit API keys before live trading."
+    echo "Created $CONFIG - edit API keys before live trading."
 fi
 
 # 4. Frontend dependencies (skipped if npm is unavailable)
 if command -v npm >/dev/null 2>&1; then
     echo "Installing frontend dependencies..."
-    (cd web-frontend && npm install --silent)
+    (cd frontend && npm install --silent)
 else
-    echo "npm not found — skipping frontend deps (install Node 20+ for the dashboard)."
+    echo "npm not found - skipping frontend deps (install Node 20+ for the dashboard)."
 fi
 
 echo ""

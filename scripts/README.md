@@ -12,7 +12,7 @@ they work from any directory. Python scripts set `PYTHONPATH=code` for you.
 | `retrain_ml.sh`     | Retrain the ML signal scorer from recorded trade outcomes.                       |
 | `run_dashboard.sh`  | Serve the dashboard API (and the built frontend if present) on port 8000.        |
 | `dev.sh`            | Full-stack dev: FastAPI (`:8000`) + Vite dashboard (`:5173`) with hot reload.    |
-| `build_frontend.sh` | Install and build the dashboard into `web-frontend/dist`.                        |
+| `build_frontend.sh` | Install and build the dashboard into `frontend/dist`.                            |
 | `test.sh`           | Run the full test suite (404 tests). Extra args pass through to pytest.          |
 | `lint.sh`           | Check Python (black + autoflake) and frontend lint. Pass `--fix` to auto-format. |
 | `docker_up.sh`      | Build and start the full stack in Docker (dashboard `:8080`, API `:8000`).       |

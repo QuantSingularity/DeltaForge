@@ -13,8 +13,8 @@ backtest_results/
 *.log
 
 # Node / frontend
-web-frontend/node_modules/
-web-frontend/dist/
+frontend/node_modules/
+frontend/dist/
 *.local
 
 # Env / secrets
@@ -29,3 +29,7 @@ web-frontend/dist/
 .DS_Store
 .idea/
 .vscode/
+
+# Auth store (generated at runtime, never commit)
+code/backend/users.json
+code/backend/.auth_secret

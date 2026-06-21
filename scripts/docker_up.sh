@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# DeltaForge — build and start the full stack (backend + dashboard) in Docker.
+# DeltaForge - build and start the full stack (backend + dashboard) in Docker.
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"

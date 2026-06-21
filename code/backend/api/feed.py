@@ -245,9 +245,11 @@ class FeedEngine:
                     continue
                 try:
                     sig, conf, _ = fn(df)
+                    # Strategy methods may return numpy scalars; coerce to
+                    # native Python types so the JSON encoder can serialize them.
                     per[cfg_key] = {
-                        "signal": _DIR_NAME[sig],
-                        "confidence": round(conf, 1),
+                        "signal": _DIR_NAME[int(sig)],
+                        "confidence": round(float(conf), 1),
                     }
                 except Exception:
                     per[cfg_key] = {"signal": "FLAT", "confidence": 0.0}
