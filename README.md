@@ -13,6 +13,8 @@ simplifying assumption is stated plainly in the Limitations table rather than hi
   <img src="docs/images/homepage.bmp" alt="DeltaForge HomePage" width="80%">
 </div>
 
+<div style="height: 1px; background-color: #444; margin: 20px 0;"></div>
+
 |                |                                                                               |
 | -------------- | ----------------------------------------------------------------------------- |
 | **Language**   | Python 3.12 (core + API), React + Vite (web), MQL4/MQL5 (forex)               |
