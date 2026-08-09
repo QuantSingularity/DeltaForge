@@ -9,6 +9,10 @@ service that drives a modern React dashboard, a terminal bot, and MetaTrader EAs
 The emphasis is on correct, well-tested trading logic and a clean architecture. Every
 simplifying assumption is stated plainly in the Limitations table rather than hidden.
 
+<div align="center">
+  <img src="docs/images/homepage.bmp" alt="DeltaForge HomePage" width="80%">
+</div>
+
 |                |                                                                               |
 | -------------- | ----------------------------------------------------------------------------- |
 | **Language**   | Python 3.12 (core + API), React + Vite (web), MQL4/MQL5 (forex)               |
