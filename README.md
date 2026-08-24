@@ -1,84 +1,45 @@
 # DeltaForge
 
-A multi-strategy agentic trading system for crypto (direct exchange APIs) and forex
-(MT4/MT5 Expert Advisors). A Python trading core runs 26 strategies through a
-confluence-voting engine, scores each candidate with a machine-learning layer, and
-manages risk with hot-reloadable limits. The same core is exposed through a FastAPI
-service that drives a modern React dashboard, a terminal bot, and MetaTrader EAs.
+![CI/CD Status](https://img.shields.io/github/actions/workflow/status/quantsingularity/DeltaForge/cicd.yml?branch=main&label=CI%2FCD&logo=github)
 
-The emphasis is on correct, well-tested trading logic and a clean architecture. Every
-simplifying assumption is stated plainly in the Limitations table rather than hidden.
+## Multi-Strategy Agentic Trading System
+
+DeltaForge is a multi-strategy agentic trading system for crypto (direct exchange APIs via ccxt, plus a native Bitflex adapter) and forex (MT4/MT5 Expert Advisors). A Python trading core runs 26 strategies across 6 categories through a confluence-voting engine, scores each candidate with a hand-implemented logistic-regression scorer, and manages risk with hot-reloadable limits. The same core is exposed through a FastAPI service that drives a React dashboard, a terminal bot, and the MetaTrader EAs, so there is one implementation of every calculation, not a separate copy per interface.
 
 <div align="center">
-  <img src="docs/images/homepage.bmp" alt="DeltaForge HomePage" width="80%">
+  <img src="docs/images/homepage.bmp" alt="DeltaForge HomePage" width="100%">
 </div>
 
-<div style="height: 1px; background-color: #444; margin: 20px 0;"></div>
+## Table of Contents
 
-|                |                                                                               |
-| -------------- | ----------------------------------------------------------------------------- |
-| **Language**   | Python 3.12 (core + API), React + Vite (web), MQL4/MQL5 (forex)               |
-| **Interfaces** | Web dashboard, REST API + WebSocket, terminal bot, MT4/MT5 EAs                |
-| **Modules**    | Strategies, Risk, Backtest, Execution, Exchanges, AI scoring, Notifications   |
-| **Strategies** | 26 across 6 categories, combined by a confluence-voting engine                |
-| **Markets**    | 10 crypto exchanges via ccxt plus a native Bitflex adapter; forex via MT4/MT5 |
-| **Auth**       | Token based (stdlib PBKDF2 hashing + HMAC-signed tokens), no extra deps       |
-| **Tests**      | 424 tests, all passing via pytest                                             |
-| **Build**      | pip + pytest (backend), Vite (frontend), Docker (full stack)                  |
+- [Overview](#overview)
+- [Project Structure](#project-structure)
+- [Feature Status](#feature-status)
+- [Technology Stack](#technology-stack)
+- [Architecture](#architecture)
+- [Installation and Setup](#installation-and-setup)
+- [Running the Stack](#running-the-stack)
+- [API Surface](#api-surface)
+- [Testing](#testing)
+- [CI/CD Pipeline](#cicd-pipeline)
+- [Documentation](#documentation)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Capabilities
+## Overview
 
-| Module      | What it does                                                                                                                                    |
-| ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Market data | Fetches OHLCV via ccxt or the native Bitflex adapter; a sandbox feed drives the dashboard with a synthetic series when no exchange is connected |
-| Strategies  | 26 strategies across 6 categories vote into a single direction and confluence score, with higher-timeframe trend confirmation before entry      |
-| AI scoring  | Logistic-regression scorer rates each signal 0 to 100 percent, learns online from outcomes, and auto-stops on anomalies                         |
-| Risk        | Per-trade loss caps, order and position limits, and five trailing-stop types (ATR, percentage, dollar, time, volatility), all hot-reloaded      |
-| Execution   | Portfolio and trade manager track positions, average cost, and realized and unrealized PnL                                                      |
-| Backtesting | Walk-forward engine with metrics: win rate, net PnL, max drawdown, Sharpe and profit factor                                                     |
-| Interfaces  | Everything above over a REST API plus a live WebSocket stream, an authenticated web dashboard, a terminal bot, and MetaTrader EAs               |
+DeltaForge demonstrates a trading workflow across a real, runnable codebase, and the emphasis throughout is on correct, well-tested trading logic over a large surface of unverifiable claims. Every simplifying assumption (the sandbox feed is a synthetic random walk, backtest fills use bar-close prices with no order book, the AI scorer is a from-scratch logistic regression rather than a deep model, the dashboard's auth is UI-gated rather than enforced per API route) is stated plainly rather than glossed over.
 
-## Architecture
-
-```
-                      +----------------------------+
-                      |  React + Vite dashboard     |
-                      |  (Tailwind, Recharts)       |
-                      +-------------+--------------+
-                                    | fetch /api/*  + WS /ws  (JSON)
-                                    v
-                      +----------------------------+
-                      |  FastAPI service            |
-                      |  (REST + WebSocket + auth)  |
-                      +-------------+--------------+
-                                    | direct calls
-                                    v
-   +------------------------------------------------------------------+
-   |                    DeltaForge trading core (Python)               |
-   |                                                                   |
-   |  Strategies   Risk   Backtest   Execution   Exchanges   AI scorer |
-   |  Core: hot-reload config, logging, notifications                  |
-   +------------------------------------------------------------------+
-                          ^                         ^
-                          | same core               | shared strategy logic
-                      +----------------+      +----------------------+
-                      |  Terminal bot  |      |  MT4 / MT5 EAs (MQL)  |
-                      +----------------+      +----------------------+
-```
-
-The trading core is one implementation. The API service, the terminal bot and the
-test suite all use that single core, so there is one implementation of every
-calculation. The MetaTrader EAs mirror the same strategy logic for forex venues.
-
-## Project structure
+## Project Structure
 
 ```
 DeltaForge/
 ├── code/
 │   ├── backend/
-│   │   ├── api/              # FastAPI server, auth, live feed, app state
-│   │   ├── strategies/       # 26 strategies in 6 category packages + engine
-│   │   ├── risk/             # Position sizing, trailing stops, risk manager
+│   │   ├── api/              # FastAPI server, PBKDF2-HMAC auth, live feed, app state
+│   │   ├── strategies/       # 26 strategies in 6 category classes, plus the
+│   │   │                     # confluence-voting engine and shared indicators
+│   │   ├── risk/             # Position sizing, 5 trailing-stop types, risk manager
 │   │   ├── backtest/         # Walk-forward engine and metrics
 │   │   ├── exchanges/        # ccxt manager and the native Bitflex adapter
 │   │   ├── trading/          # Portfolio and trade manager
@@ -86,10 +47,12 @@ DeltaForge/
 │   │   ├── core/             # Hot-reloading config and logging
 │   │   ├── tests/            # Backend unit tests
 │   │   └── main.py           # Terminal bot entry point
-│   └── ai_models/            # Signal scoring, anomaly detection, online learning
+│   └── ai_models/            # Hand-implemented logistic-regression signal scorer,
+│                             # feature extraction, online learning, anomaly detection
 ├── frontend/
 │   └── src/
-│       ├── pages/            # Home, SignIn, SignUp, Dashboard, Trades, ...
+│       ├── pages/            # Home, SignIn, SignUp, Dashboard, Trades, Strategies,
+│       │                     # Backtest, Settings
 │       ├── auth/             # Auth context and route guards
 │       ├── components/       # Layout, navigation, live panels, charts
 │       ├── hooks/            # Live WebSocket state with REST fallback
@@ -98,176 +61,150 @@ DeltaForge/
 │   ├── docker/               # Dockerfiles, compose, nginx
 │   ├── k8s/                  # Kubernetes manifests
 │   ├── terraform/            # IaC (ECR, VPC, EKS)
-│   └── mql4/ · mql5/         # MetaTrader Expert Advisors
-├── scripts/                  # Run, backtest, dev, build, test and setup helpers
+│   └── mql4/ mql5/           # MetaTrader Expert Advisors (source, reviewed
+│                             # statically here, not compiled in CI)
+├── scripts/                  # Run, backtest, dev, build, test, and setup helpers
 ├── docs/                     # Architecture notes
-├── .github/workflows/        # Continuous integration
 └── README.md
 ```
 
-## Web app
+## Feature Status
 
-The dashboard opens on a public homepage. A user signs up or signs in and is taken
-to the protected dashboard. Authentication uses a bearer token that the frontend
-stores client-side and sends on every request; a 401 clears it and returns to sign-in.
+### Application tier (wired and tested)
 
-| Route         | Page       | Access                                            |
-| ------------- | ---------- | ------------------------------------------------- |
-| `/`           | Home       | Public landing (entry route)                      |
-| `/signin`     | Sign in    | Public, redirects to the dashboard if signed in   |
-| `/signup`     | Sign up    | Public, redirects to the dashboard if signed in   |
-| `/dashboard`  | Dashboard  | Protected                                         |
-| `/trades`     | Trades     | Protected (open positions and closed history)     |
-| `/strategies` | Strategies | Protected (signal matrix and 26-strategy heatmap) |
-| `/backtest`   | Backtest   | Protected (on-demand walk-forward)                |
-| `/settings`   | Settings   | Protected (live config and account)               |
+| Component                           | Details                                                                                                                                                                                                                                                                                 |
+| :---------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Market data**                     | OHLCV via ccxt or the native Bitflex adapter; a sandbox feed drives the dashboard with a synthetic random-walk series when no exchange is connected.                                                                                                                                    |
+| **Strategies**                      | 26 strategy methods across 6 category classes (advanced, momentum, price action, trend, volatility, volume), voting into a single direction and confluence score, with higher-timeframe trend confirmation before entry.                                                                |
+| **AI scoring**                      | A from-scratch logistic-regression scorer (NumPy, no scikit-learn) rating each signal 0 to 100 percent, learning online from outcomes, and auto-stopping on anomalies. Its weights are handcrafted defaults, overwritten by training on real trade history via `scripts/retrain_ml.sh`. |
+| **Risk**                            | Per-trade loss caps, order and position limits, and five trailing-stop types (ATR, percentage, dollar, time, volatility), all hot-reloaded from `config.json`.                                                                                                                          |
+| **Execution**                       | Portfolio and trade manager tracking positions, average cost, and realized and unrealized PnL.                                                                                                                                                                                          |
+| **Backtesting**                     | A walk-forward engine reporting win rate, net PnL, max drawdown, Sharpe ratio, and profit factor.                                                                                                                                                                                       |
+| **Auth**                            | Token-based auth using only the Python standard library: PBKDF2-HMAC-SHA256 password hashing with a per-user salt, and HMAC-signed tokens, with no external auth dependency.                                                                                                            |
+| **Web dashboard**                   | React (Vite) app with Tailwind CSS and Recharts, covering Home, Sign In, Sign Up, Dashboard, Trades, Strategies, Backtest, and Settings, talking to the API over REST and a live WebSocket stream.                                                                                      |
+| **Terminal bot and MetaTrader EAs** | The same trading core drives a terminal bot and forex Expert Advisors (MQL4/MQL5), so strategy logic isn't duplicated per interface for the Python-based venues.                                                                                                                        |
 
-When the frontend is built (`frontend/dist`), the FastAPI server serves it on the
-same origin with a single-page-app fallback, so one process serves both the API and
-the dashboard and a hard refresh on a deep link such as `/dashboard` resolves correctly.
+## Technology Stack
 
-## Strategies
+| Area           | Technology                                                                           |
+| :------------- | :----------------------------------------------------------------------------------- |
+| Trading core   | Python 3.12, FastAPI, ccxt, pandas, NumPy                                            |
+| AI / scoring   | A hand-implemented logistic-regression scorer (NumPy only, no scikit-learn)          |
+| Auth           | Python stdlib only: PBKDF2-HMAC-SHA256, HMAC-signed tokens                           |
+| Forex          | MQL4 / MQL5 (MetaTrader Expert Advisors)                                             |
+| Web frontend   | React, Vite, Tailwind CSS, Recharts                                                  |
+| Infrastructure | Docker, Docker Compose, Kubernetes, Terraform (ECR, VPC, EKS)                        |
+| CI/CD          | GitHub Actions                                                                       |
+| Testing        | pytest (231 test functions, many parametrized, collecting to roughly 424 test cases) |
 
-All 26 strategies run every scan and vote. The engine aggregates the votes into a
-single direction and a confluence score; a trade is only considered when confluence
-clears the threshold and the higher-timeframe trend agrees. Signals at one bar are
-acted on at the next, so there is no look-ahead bias.
+## Architecture
 
-| Category     | Count | Strategies                                                           |
-| ------------ | ----- | -------------------------------------------------------------------- |
-| Trend        | 7     | ma_cross, ema_trend, macd, adx, parabolic_sar, ichimoku, trendline   |
-| Momentum     | 3     | rsi, stochastic, momentum                                            |
-| Volatility   | 3     | bollinger_bands, atr_breakout, breakout                              |
-| Volume       | 3     | accum_dist, chaikin_mf, volume_breakout                              |
-| Price action | 4     | pullback, fibonacci, pivot_points, support_resist                    |
-| Advanced     | 6     | smc, order_flow, market_profile, lux_algo, news_momentum, quant_algo |
+```
+Client
+  └── frontend (React, Vite, Tailwind, Recharts)   ── HTTP/WebSocket ──┐
+                                                                       ▼
+FastAPI service (REST + WebSocket + auth)
+                                                                       ▼
+DeltaForge trading core (Python, one implementation, shared by every interface)
+  strategies (26 across 6 categories) · risk · backtest · execution
+  exchanges (ccxt + Bitflex adapter) · AI scorer
+  core: hot-reload config, logging, notifications
+      ▲                                              ▲
+      │ same core                                    │ shared strategy logic
+  Terminal bot                                    MT4 / MT5 EAs (MQL, reviewed
+                                                   statically, not compiled in CI)
+```
 
-## REST API
+See [docs/architecture.md](docs/architecture.md) for detail.
 
-All routes are served under `/api`; the live feed is a WebSocket at `/ws`. Auth is
-token based and adds no third-party dependencies (standard-library PBKDF2 password
-hashing and HMAC-signed tokens, with a JSON-file user store).
+## Installation and Setup
 
-### Authentication
+Prerequisites: Python 3.10+ and Node.js 20+. Docker is optional.
 
-| Method | Path                 | Body / header                   | Returns           |
-| ------ | -------------------- | ------------------------------- | ----------------- |
-| POST   | `/api/auth/register` | `{ name, email, password }`     | `{ token, user }` |
-| POST   | `/api/auth/login`    | `{ email, password }`           | `{ token, user }` |
-| GET    | `/api/auth/me`       | `Authorization: Bearer <token>` | `{ user }`        |
+```bash
+git clone https://github.com/quantsingularity/DeltaForge.git
+cd DeltaForge
 
-### Dashboard and control
+# Backend
+pip install -r code/backend/requirements.txt -r infrastructure/docker/requirements-api.txt pytest
 
-| Method | Path              | Description                                 |
-| ------ | ----------------- | ------------------------------------------- |
-| GET    | `/api/health`     | Liveness probe and bot running state        |
-| GET    | `/api/state`      | Full dashboard snapshot                     |
-| GET    | `/api/signals`    | Signal matrix (symbol x timeframe)          |
-| GET    | `/api/trades`     | Open and recent closed trades               |
-| GET    | `/api/risk`       | Risk dashboard                              |
-| GET    | `/api/strategies` | Confluence heatmap across the 26 strategies |
-| GET    | `/api/config`     | Current configuration                       |
-| PUT    | `/api/config`     | Patch and hot-reload configuration          |
-| POST   | `/api/bot/start`  | Start the sandbox feed                      |
-| POST   | `/api/bot/stop`   | Stop the feed                               |
-| POST   | `/api/backtest`   | Run an on-demand walk-forward backtest      |
-| WS     | `/ws`             | Live snapshot stream (about 1 Hz)           |
+# Frontend
+cd frontend && npm install && cd ..
+```
 
-### Backtest request body
+For an automated setup:
 
-| Field             | Example      | Notes                      |
-| ----------------- | ------------ | -------------------------- |
-| `symbol`          | `"BTC/USDT"` | Trading pair               |
-| `timeframe`       | `"1h"`       | One of 15m, 1h, 4h, 1d     |
-| `bars`            | `600`        | Number of bars to simulate |
-| `initial_capital` | `10000`      | Starting equity            |
+```bash
+./scripts/setup.sh
+```
 
-## Prerequisites
-
-| Tool          | Version  | Purpose                             |
-| ------------- | -------- | ----------------------------------- |
-| Python + pip  | 3.10+    | Run the trading core, API and tests |
-| Node.js + npm | 20+      | Build and serve the dashboard       |
-| Docker        | Optional | Run the full stack in containers    |
-
-## Quick start
-
-| Goal                 | Command                                                                                             |
-| -------------------- | --------------------------------------------------------------------------------------------------- |
-| Install backend deps | `pip install -r code/backend/requirements.txt -r infrastructure/docker/requirements-api.txt pytest` |
-| Run the test suite   | `pytest`                                                                                            |
-| Run the bot (paper)  | `PYTHONPATH=code python -m backend --sandbox`                                                       |
-| Run a backtest       | `PYTHONPATH=code python -m backend --backtest`                                                      |
+## Running the Stack
 
 Development, with API and UI hot reload (two processes):
 
-```
+```bash
 PYTHONPATH=code uvicorn backend.api.server:app --reload --port 8000
-cd frontend && npm install && npm run dev      # http://localhost:5173
+cd frontend && npm run dev      # http://localhost:5173
 ```
 
 Single origin, where one process serves the API and the built dashboard:
 
-```
-cd frontend && npm install && npm run build && cd ..
+```bash
+cd frontend && npm run build && cd ..
 PYTHONPATH=code uvicorn backend.api.server:app --port 8000   # http://localhost:8000
 ```
 
 Full stack in containers:
 
-```
+```bash
 docker compose -f infrastructure/docker/docker-compose.yml up --build
 # Dashboard: http://localhost:8080   API docs: http://localhost:8000/docs
 ```
 
-## Helper scripts
+| Script                                    | What it does                                      |
+| :---------------------------------------- | :------------------------------------------------ |
+| `scripts/setup.sh`                        | One-time dependency and config setup              |
+| `scripts/dev.sh`                          | API and Vite dev server together (hot reload)     |
+| `scripts/run_sandbox.sh`                  | Paper-trading bot                                 |
+| `scripts/run_bot.sh`                      | Live trading bot                                  |
+| `scripts/run_backtest.sh`                 | Walk-forward backtest                             |
+| `scripts/run_dashboard.sh`                | Serve the dashboard API (and built UI if present) |
+| `scripts/build_frontend.sh`               | Production build of the dashboard                 |
+| `scripts/retrain_ml.sh`                   | Retrain the AI scorer from trade history          |
+| `scripts/docker_up.sh` / `docker_down.sh` | Start or stop the full stack in Docker            |
+| `scripts/lint.sh`                         | Python and frontend lint                          |
 
-| Script                      | What it does                                      |
-| --------------------------- | ------------------------------------------------- |
-| `scripts/setup.sh`          | One-time dependency and config setup              |
-| `scripts/dev.sh`            | API and Vite dev server together (hot reload)     |
-| `scripts/run_sandbox.sh`    | Paper-trading bot                                 |
-| `scripts/run_bot.sh`        | Live trading bot                                  |
-| `scripts/run_backtest.sh`   | Walk-forward backtest                             |
-| `scripts/run_dashboard.sh`  | Serve the dashboard API (and built UI if present) |
-| `scripts/build_frontend.sh` | Production build of the dashboard                 |
-| `scripts/retrain_ml.sh`     | Retrain the ML scorer from trade history          |
-| `scripts/test.sh`           | Run the test suite                                |
-| `scripts/lint.sh`           | Python and frontend lint                          |
-| `scripts/docker_up.sh`      | Build and start the full stack in Docker          |
-| `scripts/docker_down.sh`    | Stop and remove the Docker stack                  |
+Runtime configuration (strategies, risk, trailing stops, ML thresholds, symbols) lives in `code/backend/config.json` and hot-reloads on save. Key environment variables: `DELTAFORGE_MODE` (sandbox or live), `DELTAFORGE_EXCHANGE`, `DELTAFORGE_PORT`, `DELTAFORGE_AUTH_SECRET` (generated and persisted if unset), and `DELTAFORGE_DATA_DIR`.
 
-## Configuration
+## API Surface
 
-Bot behavior (strategies, risk, trailing stops, ML thresholds, symbols) lives in
-`code/backend/config.json` and hot-reloads on save through the dashboard. Runtime
-environment variables:
+Base URL `http://localhost:8000`.
 
-| Variable                 | Purpose                                                  | Default     |
-| ------------------------ | -------------------------------------------------------- | ----------- |
-| `DELTAFORGE_MODE`        | Runtime mode (sandbox or live)                           | `sandbox`   |
-| `DELTAFORGE_EXCHANGE`    | Override the configured exchange for run scripts         | unset       |
-| `DELTAFORGE_PORT`        | API and dashboard port for the dev and dashboard scripts | `8000`      |
-| `DELTAFORGE_AUTH_SECRET` | Token signing secret (generated and persisted if unset)  | generated   |
-| `DELTAFORGE_DATA_DIR`    | Directory for the auth user store                        | backend dir |
+| Method    | Path                               | Notes                                        |
+| :-------- | :--------------------------------- | :------------------------------------------- |
+| GET       | `/api/health`                      | Liveness probe and bot running state         |
+| GET       | `/api/state`                       | Full dashboard snapshot                      |
+| GET       | `/api/signals`                     | Signal matrix (symbol x timeframe)           |
+| GET       | `/api/trades`                      | Open and recent closed trades                |
+| GET       | `/api/risk`                        | Risk dashboard                               |
+| GET       | `/api/strategies`                  | Confluence heatmap across the 26 strategies  |
+| GET / PUT | `/api/config`                      | Read, or patch and hot-reload, configuration |
+| POST      | `/api/bot/start` / `/api/bot/stop` | Start or stop the sandbox feed               |
+| POST      | `/api/backtest`                    | Run an on-demand walk-forward backtest       |
+| WS        | `/ws`                              | Live snapshot stream (about 1 Hz)            |
 
-## Limitations and simplifications
+Full docs are auto-generated at `/docs` once the API is running.
 
-| Area           | Simplification                                                                                                                                                 |
-| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Sandbox feed   | The dashboard runs on a synthetic random-walk price series so it populates without an exchange; trades shown in sandbox are simulated, not live fills          |
-| Backtest fills | Signals enter at the bar close with a simple model; no intrabar matching, partial fills or live order book                                                     |
-| AI scorer      | Logistic regression over a 10-feature handcrafted vector, not a deep model; trained on outcomes rather than tick data                                          |
-| Auth scope     | The dashboard data endpoints are gated by the UI rather than per-route; suitable for a same-origin internal tool, with per-route enforcement an easy follow-up |
-| Live data      | Live mode needs exchange API access; on a restricted network the exchange hosts must be on the egress allowlist                                                |
-| Forex EAs      | The MQL4/MQL5 EAs are delivered as source and compile in MetaEditor; they are reviewed statically here, not compiled in CI                                     |
+## Testing
 
-## Testing and verification
+```bash
+pytest
+```
 
-The suite is 424 tests, run with `pytest` (pythonpath configured by `pytest.ini`).
+`pytest.ini` configures `PYTHONPATH`, so the suite runs from the repository root. It collects roughly 424 test cases from 231 test functions (many parametrized).
 
 | Area            | What is covered                                                                              |
-| --------------- | -------------------------------------------------------------------------------------------- |
+| :-------------- | :------------------------------------------------------------------------------------------- |
 | Config          | Load, validate, hot-reload, and typed accessors                                              |
 | Strategies      | The engine, indicator helpers, and confluence aggregation                                    |
 | Risk            | Position sizing, stop and target calculation, trailing-stop engine                           |
@@ -278,9 +215,32 @@ The suite is 424 tests, run with `pytest` (pythonpath configured by `pytest.ini`
 | Auth            | Registration, duplicate and weak-password rejection, login, token round-trip, tamper, expiry |
 | API regressions | The scorer feature-vector crash and the strategies serialization fix are locked in           |
 
-The REST API and WebSocket were exercised end to end against a live server, and the
-built frontend is served by the same FastAPI process that answers the API.
+The REST API and WebSocket were exercised end to end against a live server; the built frontend is served by the same FastAPI process that answers the API.
+
+## CI/CD Pipeline
+
+GitHub Actions (`.github/workflows/cicd.yml`) currently runs a single job on push and pull request:
+
+| Job                 | What it does                                                                                                                                                        |
+| :------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Code Quality Checks | Python formatter checks (autoflake, black) and a repository-wide Prettier check (with a Solidity-aware plugin, though there are no Solidity files in this project). |
+
+There is currently no CI job that runs the pytest suite (231 test functions locally) or builds the frontend; both happen locally via `scripts/test.sh` and `scripts/build_frontend.sh`, but not automatically in CI.
+
+## Documentation
+
+| Document                                             | Contents                                   |
+| :--------------------------------------------------- | :----------------------------------------- |
+| [docs/architecture.md](docs/architecture.md)         | System architecture notes                  |
+| [code/README.md](code/README.md)                     | Backend and AI models overview             |
+| [frontend/README.md](frontend/README.md)             | Frontend structure                         |
+| [infrastructure/README.md](infrastructure/README.md) | Docker, Kubernetes, Terraform, and MQL EAs |
+| [scripts/README.md](scripts/README.md)               | What each helper script does               |
+
+## Contributing
+
+Open a pull request.
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
