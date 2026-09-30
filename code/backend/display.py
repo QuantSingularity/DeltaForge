@@ -1,5 +1,5 @@
 """
-DeltaForge display — backward-compatibility shim.
+DeltaForge display - backward-compatibility shim.
 Imports have moved to code.backend.display subpackage.
 """
 

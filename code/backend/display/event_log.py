@@ -1,4 +1,4 @@
-"""DeltaForge — Typed event constants and event log store."""
+"""DeltaForge - Typed event constants and event log store."""
 
 from typing import List
 

@@ -1,5 +1,5 @@
 """
-DeltaForge — shared API application state.
+DeltaForge - shared API application state.
 
 A single thread-safe ``AppState`` instance is the source of truth for the
 dashboard. The live feed (or a real bot loop) publishes into it; the REST and

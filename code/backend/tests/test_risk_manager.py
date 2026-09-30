@@ -60,11 +60,11 @@ class TestPositionSizing:
 
     def test_dollar_risk_validation_pass(self, risk):
         ok, dr = risk.validate_dollar_risk(50000.0, 49500.0, 0.005)
-        assert ok  # 0.005 BTC × $500 SL = $2.50 risk — well under $50
+        assert ok  # 0.005 BTC × $500 SL = $2.50 risk - well under $50
 
     def test_dollar_risk_validation_fail(self, risk):
         ok, dr = risk.validate_dollar_risk(50000.0, 45000.0, 1.0)
-        assert not ok  # 1 BTC × $5000 SL = $5000 — way over $50
+        assert not ok  # 1 BTC × $5000 SL = $5000 - way over $50
 
 
 class TestSLTPCalculation:
@@ -120,7 +120,7 @@ class TestTrailEngine:
         engine.register_trade("BTC/USDT", "buy", 50000.0, 49000.0, 0.1)
         prices = {"BTC/USDT": 51000.0}
         updates = engine.update_trail_stops(prices, {"BTC/USDT": df})
-        # Should either move SL or stay — no exceptions
+        # Should either move SL or stay - no exceptions
         assert isinstance(updates, dict)
 
     def test_trail_only_moves_favourably_buy(self, base_config, df):

@@ -435,7 +435,7 @@ int S_MktProfile(int tf) {
 }
 
 //--------------------------------------------------------------------
-// 24. LUXALGO — RSI Divergence + EMA Ribbon Confirmation
+// 24. LUXALGO - RSI Divergence + EMA Ribbon Confirmation
 //--------------------------------------------------------------------
 int S_LuxAlgo(int tf) {
    double rsi1   = iRSI(NULL,tf,14,PRICE_CLOSE,1);
@@ -475,7 +475,7 @@ int S_LuxAlgo(int tf) {
 }
 
 //--------------------------------------------------------------------
-// 25. NEWS MOMENTUM — Large Impulse Candle + Volume Surge Continuation
+// 25. NEWS MOMENTUM - Large Impulse Candle + Volume Surge Continuation
 //--------------------------------------------------------------------
 int S_NewsMomentum(int tf) {
    double atr=iATR(NULL,tf,14,1);
@@ -498,7 +498,7 @@ int S_NewsMomentum(int tf) {
 }
 
 //--------------------------------------------------------------------
-// 26. QUANTITATIVE ALGO — Z-Score Mean Reversion
+// 26. QUANTITATIVE ALGO - Z-Score Mean Reversion
 //--------------------------------------------------------------------
 int S_QuantAlgo(int tf) {
    int PERIOD=20;

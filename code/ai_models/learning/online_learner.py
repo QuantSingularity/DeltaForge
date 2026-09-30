@@ -1,4 +1,4 @@
-"""DeltaForge — OnlineLearner: SGD online updates from trade outcomes."""
+"""DeltaForge - OnlineLearner: SGD online updates from trade outcomes."""
 
 import json
 import logging

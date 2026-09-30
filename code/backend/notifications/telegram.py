@@ -1,4 +1,4 @@
-"""DeltaForge — Telegram notification channel."""
+"""DeltaForge - Telegram notification channel."""
 
 import logging
 import time

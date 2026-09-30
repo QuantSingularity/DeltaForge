@@ -1,5 +1,5 @@
 """
-DeltaForge — Price Action strategies.
+DeltaForge - Price Action strategies.
 """
 
 from typing import Tuple
@@ -10,7 +10,7 @@ from ..indicators import SIGNAL_BUY, SIGNAL_NONE, SIGNAL_SELL, _atr, _pivot_poin
 
 
 class PriceActionStrategies:
-    """Mixin — composed into StrategyEngine."""
+    """Mixin - composed into StrategyEngine."""
 
     def fibonacci(self, df: pd.DataFrame) -> Tuple[int, float, str]:
         swing_h = df["high"].iloc[-50:].max()

@@ -1,5 +1,5 @@
 """
-DeltaForge — shared test utilities.
+DeltaForge - shared test utilities.
 
 Importable from any test module (``pythonpath = code`` is set in
 ``pytest.ini``)::

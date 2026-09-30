@@ -1,4 +1,4 @@
-"""DeltaForge — Bitflex native REST adapter."""
+"""DeltaForge - Bitflex native REST adapter."""
 
 """
 DeltaForge Exchange Manager
@@ -106,7 +106,7 @@ class BitflexAdapter(BaseExchange):
             }
         except Exception as e:
             logger.warning(
-                f"[bitflex] load_markets error: {e} — using empty market list"
+                f"[bitflex] load_markets error: {e} - using empty market list"
             )
             self.markets = {}
         return self.markets
@@ -295,7 +295,7 @@ class BitflexAdapter(BaseExchange):
             return []
 
     def fetch_positions(self, symbols=None) -> List[dict]:
-        # Bitflex spot — no margin positions
+        # Bitflex spot - no margin positions
         return []
 
     def fetch_my_trades(self, symbol: str, limit: int = 100) -> List[dict]:

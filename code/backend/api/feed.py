@@ -1,5 +1,5 @@
 """
-DeltaForge — live dashboard feed.
+DeltaForge - live dashboard feed.
 
 Runs the real StrategyEngine, FeatureExtractor and SignalScorer on a rolling
 synthetic price series (sandbox mode) so the dashboard is fully populated

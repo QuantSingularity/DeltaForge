@@ -1,5 +1,5 @@
 """
-DeltaForge — Momentum strategies.
+DeltaForge - Momentum strategies.
 """
 
 from typing import Tuple
@@ -17,7 +17,7 @@ from ..indicators import (
 
 
 class MomentumStrategies:
-    """Mixin — composed into StrategyEngine."""
+    """Mixin - composed into StrategyEngine."""
 
     def rsi_strategy(self, df: pd.DataFrame) -> Tuple[int, float, str]:
         rsi = _rsi(df["close"])

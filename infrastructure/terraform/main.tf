@@ -1,4 +1,4 @@
-# DeltaForge — infrastructure as code.
+# DeltaForge - infrastructure as code.
 #
 # Provisions container registries for the backend and frontend images and an
 # EKS cluster to run them, wired to the Kubernetes manifests in ../k8s.

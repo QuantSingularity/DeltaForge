@@ -1,7 +1,7 @@
 """
 DeltaForge Portfolio Tracker
 Tracks capital allocation, realised P&L, drawdown, win/loss metrics,
-and per-symbol performance — all missing from the original codebase.
+and per-symbol performance - all missing from the original codebase.
 """
 
 import logging

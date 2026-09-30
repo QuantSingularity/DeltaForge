@@ -1,5 +1,5 @@
 """
-DeltaForge StrategyEngine — composes all 26 strategy mixins into one class.
+DeltaForge StrategyEngine - composes all 26 strategy mixins into one class.
 Imports from subdirectory modules; handles run_all() voting logic.
 """
 

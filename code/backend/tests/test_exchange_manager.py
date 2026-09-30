@@ -137,5 +137,5 @@ class TestExchangeManagerInit:
             mgr = ExchangeManager("bitflex", "key", "secret", sandbox=True)
         with patch.object(mgr.exchange, "fetch_ohlcv", return_value=[]):
             result = mgr.fetch_ohlcv("BTC/USDT", "1h")
-        # empty list is falsy — ExchangeManager should return None or []
+        # empty list is falsy - ExchangeManager should return None or []
         assert result == [] or result is None

@@ -1,4 +1,4 @@
-"""DeltaForge — Abstract exchange interface."""
+"""DeltaForge - Abstract exchange interface."""
 
 from abc import ABC, abstractmethod
 from typing import List, Optional

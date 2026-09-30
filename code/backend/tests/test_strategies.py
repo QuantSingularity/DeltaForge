@@ -100,7 +100,7 @@ class TestStrategySignalContract:
 
     @pytest.mark.parametrize("name", STRATEGY_NAMES)
     def test_no_exception_short_df(self, engine, df_short, name):
-        """Strategies must not raise on short DataFrames — return NONE gracefully."""
+        """Strategies must not raise on short DataFrames - return NONE gracefully."""
         try:
             sig, conf, note = getattr(engine, name)(df_short)
             assert sig in (SIGNAL_BUY, SIGNAL_SELL, SIGNAL_NONE)
@@ -111,7 +111,7 @@ class TestStrategySignalContract:
     def test_zero_confidence_on_none_signal(self, engine, df_300, name):
         sig, conf, note = getattr(engine, name)(df_300)
         if sig == SIGNAL_NONE:
-            # Conf can be 0 or small — just verify it's not absurdly high
+            # Conf can be 0 or small - just verify it's not absurdly high
             assert conf <= 100.0
 
 

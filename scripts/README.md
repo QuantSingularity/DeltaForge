@@ -1,4 +1,4 @@
-# DeltaForge — Scripts
+# DeltaForge - Scripts
 
 Convenience entry points. All scripts resolve the project root themselves, so
 they work from any directory. Python scripts set `PYTHONPATH=code` for you.

@@ -1,5 +1,5 @@
 """
-DeltaForge risk_manager — backward-compatibility shim.
+DeltaForge risk_manager - backward-compatibility shim.
 Imports have moved to code.backend.risk subpackage.
 """
 

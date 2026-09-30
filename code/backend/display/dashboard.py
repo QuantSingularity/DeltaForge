@@ -1,4 +1,4 @@
-"""DeltaForge — DeltaForgeDisplay: 5-panel rich terminal dashboard."""
+"""DeltaForge - DeltaForgeDisplay: 5-panel rich terminal dashboard."""
 
 import os
 import re
@@ -254,7 +254,7 @@ class DeltaForgeDisplay:
             Panel(
                 header,
                 border_style="cyan",
-                title="[bold cyan]DeltaForge — In-House Use Only[/]",
+                title="[bold cyan]DeltaForge - In-House Use Only[/]",
             )
         )
 
@@ -279,7 +279,7 @@ class DeltaForgeDisplay:
         for tf in ("15m", "1h", "4h", "1d"):
             sig = self._signals.get(tf)
             if not sig:
-                table.add_row(tf, "—", "WAITING", "—", "—", "—", "—", "—", "—", "—")
+                table.add_row(tf, "-", "WAITING", "-", "-", "-", "-", "-", "-", "-")
                 continue
 
             d = sig["direction"]
@@ -308,8 +308,8 @@ class DeltaForgeDisplay:
 
             sl_val = sig["sl"]
             tp_val = sig["tp"]
-            sl_t = Text(f"{sl_val:.6f}" if sl_val else "—")
-            tp_t = Text(f"{tp_val:.6f}" if tp_val else "—")
+            sl_t = Text(f"{sl_val:.6f}" if sl_val else "-")
+            tp_t = Text(f"{tp_val:.6f}" if tp_val else "-")
             sl_t.stylize(self.c_sl)
             tp_t.stylize(self.c_tp)
 
@@ -370,13 +370,13 @@ class DeltaForgeDisplay:
             pnl_t.stylize(self.c_buy if upnl >= 0 else self.c_sell)
 
             sl_t = Text(f"{t.get('sl', 0):.6f}")
-            tp_t = Text(f"{t.get('tp', 0):.6f}" if t.get("tp") else "—")
+            tp_t = Text(f"{t.get('tp', 0):.6f}" if t.get("tp") else "-")
             sl_t.stylize(self.c_sl)
             tp_t.stylize(self.c_tp)
 
             # Trail indicator: show arrow if trail recently moved
             trail_moved = t.get("trail_updated", False)
-            trail_txt = Text("▲ YES" if trail_moved else "—")
+            trail_txt = Text("▲ YES" if trail_moved else "-")
             trail_txt.stylize(self.c_trail if trail_moved else "dim white")
 
             table.add_row(
@@ -395,7 +395,7 @@ class DeltaForgeDisplay:
         self.console.print(table)
 
     # ─────────────────────────────────────────────────────────────
-    # SECTION: RISK DASHBOARD  (new — required by PDF)
+    # SECTION: RISK DASHBOARD  (new - required by PDF)
     # ─────────────────────────────────────────────────────────────
     def _print_risk_dashboard(self):
         rs = self._stats.get("risk_summary", {})
@@ -562,7 +562,7 @@ class DeltaForgeDisplay:
             return
 
         table = Table(
-            title=f"Backtest — {result.symbol} {result.timeframe}",
+            title=f"Backtest - {result.symbol} {result.timeframe}",
             border_style="yellow",
             show_lines=True,
         )

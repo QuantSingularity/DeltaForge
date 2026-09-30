@@ -1,5 +1,5 @@
 """
-DeltaForge — BacktestMetrics
+DeltaForge - BacktestMetrics
 Standalone performance metric calculations:
 Sharpe, Sortino, Calmar, MAR, Max Drawdown, Win Rate,
 Profit Factor, Expectancy, Recovery Factor.
@@ -121,7 +121,7 @@ class BacktestMetrics:
 
     @property
     def mar_ratio(self) -> float:
-        """Minimum Acceptable Return ratio — same as Calmar here."""
+        """Minimum Acceptable Return ratio - same as Calmar here."""
         return self.calmar_ratio
 
     @property

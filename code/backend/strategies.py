@@ -1,5 +1,5 @@
 """
-DeltaForge strategies — backward-compatibility shim.
+DeltaForge strategies - backward-compatibility shim.
 Imports have moved to code.backend.strategies subpackage.
 """
 

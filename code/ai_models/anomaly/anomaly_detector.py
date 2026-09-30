@@ -1,4 +1,4 @@
-"""DeltaForge — AnomalyDetector: Z-score + spread + volume spike auto-stop."""
+"""DeltaForge - AnomalyDetector: Z-score + spread + volume spike auto-stop."""
 
 import logging
 from typing import Tuple

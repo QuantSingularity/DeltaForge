@@ -1,5 +1,5 @@
 """
-DeltaForge — Volume strategies.
+DeltaForge - Volume strategies.
 """
 
 from typing import Tuple
@@ -17,15 +17,15 @@ from ..indicators import (
 
 
 class VolumeStrategies:
-    """Mixin — composed into StrategyEngine."""
+    """Mixin - composed into StrategyEngine."""
 
     def accum_dist(self, df: pd.DataFrame) -> Tuple[int, float, str]:
         ad = _ad_line(df)
         ad_e = _ema(ad, 10)
         if ad_e.iloc[-1] > ad_e.iloc[-2] > ad_e.iloc[-3]:
-            return SIGNAL_BUY, 65, "A/D rising — accumulation"
+            return SIGNAL_BUY, 65, "A/D rising - accumulation"
         if ad_e.iloc[-1] < ad_e.iloc[-2] < ad_e.iloc[-3]:
-            return SIGNAL_SELL, 65, "A/D falling — distribution"
+            return SIGNAL_SELL, 65, "A/D falling - distribution"
         return SIGNAL_NONE, 0, ""
 
     # ─────────────────────────────────────────────────────────────────

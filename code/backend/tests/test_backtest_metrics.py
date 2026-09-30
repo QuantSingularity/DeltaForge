@@ -9,7 +9,7 @@ from ..backtest.metrics import BacktestMetrics
 
 @pytest.fixture
 def balanced_metrics():
-    """10 wins of $100, 5 losses of -$80 — PF > 1."""
+    """10 wins of $100, 5 losses of -$80 - PF > 1."""
     pnls = [100.0] * 10 + [-80.0] * 5
     equity = [10000.0]
     for p in pnls:

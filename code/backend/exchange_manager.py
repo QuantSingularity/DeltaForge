@@ -1,5 +1,5 @@
 """
-DeltaForge exchange_manager — backward-compatibility shim.
+DeltaForge exchange_manager - backward-compatibility shim.
 Imports have moved to code.backend.exchanges subpackage.
 """
 

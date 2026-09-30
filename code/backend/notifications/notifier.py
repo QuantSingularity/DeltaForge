@@ -129,7 +129,7 @@ class Notifier:
         )
 
     def anomaly_detected(self, reason: str):
-        self.send(NotificationEvent("⚠ ANOMALY — BOT STOPPED", message=reason))
+        self.send(NotificationEvent("⚠ ANOMALY - BOT STOPPED", message=reason))
 
     def bot_started(self, exchange: str):
         self.send(NotificationEvent("✅ BOT STARTED", message=f"Exchange: {exchange}"))

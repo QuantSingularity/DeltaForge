@@ -1,5 +1,5 @@
 """
-DeltaForge backtest — backward-compatibility shim.
+DeltaForge backtest - backward-compatibility shim.
 Imports have moved to code.backend.backtest subpackage.
 """
 

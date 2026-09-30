@@ -1,4 +1,4 @@
-"""DeltaForge — HTTP Webhook notification channel."""
+"""DeltaForge - HTTP Webhook notification channel."""
 
 import json
 import logging

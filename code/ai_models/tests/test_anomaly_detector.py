@@ -50,7 +50,7 @@ class TestAnomalyDetector:
 
     def test_no_anomaly_before_warmup(self, cfg):
         det = AnomalyDetector(cfg)
-        # Only 5 updates — not enough history
+        # Only 5 updates - not enough history
         for _ in range(5):
             det.update(50000.0, 1_000_000.0)
         is_anom, _ = det.is_anomaly(50000.0, 1_000_000.0, 0.05)

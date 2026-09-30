@@ -1,5 +1,5 @@
 """
-DeltaForge trade_manager — backward-compatibility shim.
+DeltaForge trade_manager - backward-compatibility shim.
 Imports have moved to code.backend.trading subpackage.
 """
 

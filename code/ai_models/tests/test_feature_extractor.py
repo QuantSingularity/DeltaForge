@@ -83,6 +83,6 @@ class TestFeatureExtractor:
         assert not np.allclose(v1, v2), "Same features for different data"
 
     def test_confluence_slot_is_zero(self, extractor, df):
-        """Confluence (slot 9) is always 0 — filled externally by scorer."""
+        """Confluence (slot 9) is always 0 - filled externally by scorer."""
         vec = extractor.extract(df)
         assert vec[9] == 0.0

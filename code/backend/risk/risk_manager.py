@@ -1,4 +1,4 @@
-"""DeltaForge — Unified RiskManager (re-exports sub-components)."""
+"""DeltaForge - Unified RiskManager (re-exports sub-components)."""
 
 import logging
 import time

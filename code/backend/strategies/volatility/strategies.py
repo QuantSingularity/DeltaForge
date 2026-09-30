@@ -1,5 +1,5 @@
 """
-DeltaForge — Volatility strategies.
+DeltaForge - Volatility strategies.
 """
 
 from typing import Tuple
@@ -10,7 +10,7 @@ from ..indicators import SIGNAL_BUY, SIGNAL_NONE, SIGNAL_SELL, _atr
 
 
 class VolatilityStrategies:
-    """Mixin — composed into StrategyEngine."""
+    """Mixin - composed into StrategyEngine."""
 
     def atr_breakout(self, df: pd.DataFrame) -> Tuple[int, float, str]:
         atr = _atr(df).iloc[-1]

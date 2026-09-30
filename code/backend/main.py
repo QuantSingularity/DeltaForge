@@ -1,5 +1,5 @@
 """
-DeltaForge Crypto Bot — Main Entry Point v1.2
+DeltaForge Crypto Bot - Main Entry Point v1.2
 ─────────────────────────────────────────────────────────────────────
 Usage:
   python -m backend                   # live trading

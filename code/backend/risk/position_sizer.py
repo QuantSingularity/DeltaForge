@@ -1,4 +1,4 @@
-"""DeltaForge — Position sizing and dollar-risk validation."""
+"""DeltaForge - Position sizing and dollar-risk validation."""
 
 import logging
 from typing import Optional, Tuple

@@ -486,7 +486,7 @@ void CheckManualTrades()
       if(PosInfo.Symbol() != g_Symbol) continue;
       if(PosInfo.Magic()  == g_MagicNumber) continue; // Already ours
 
-      // This is a manual trade — apply auto SL/TP if missing
+      // This is a manual trade - apply auto SL/TP if missing
       ulong  ticket = PosInfo.Ticket();
       double curSL  = PosInfo.StopLoss();
       double curTP  = PosInfo.TakeProfit();

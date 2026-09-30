@@ -96,7 +96,7 @@ class ConfigManager:
 
         exc = cfg.get("exchange", {})
         if not exc.get("api_key") and not exc.get("sandbox", False):
-            logger.warning("No API key set and sandbox=false — using placeholder keys")
+            logger.warning("No API key set and sandbox=false - using placeholder keys")
 
         trail = cfg.get("trail_stop", {})
         tt = trail.get("type", "atr")

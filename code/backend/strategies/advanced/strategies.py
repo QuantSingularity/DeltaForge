@@ -1,5 +1,5 @@
 """
-DeltaForge — Advanced strategies.
+DeltaForge - Advanced strategies.
 """
 
 from typing import Tuple
@@ -11,7 +11,7 @@ from ..indicators import SIGNAL_BUY, SIGNAL_NONE, SIGNAL_SELL, _atr, _ema, _rsi
 
 
 class AdvancedStrategies:
-    """Mixin — composed into StrategyEngine."""
+    """Mixin - composed into StrategyEngine."""
 
     def smart_money_concepts(self, df: pd.DataFrame) -> Tuple[int, float, str]:
         close = df["close"].iloc[-1]
@@ -71,7 +71,7 @@ class AdvancedStrategies:
         return SIGNAL_NONE, 0, f"Price at POC {poc:.4f}"
 
     # ─────────────────────────────────────────────────────────────────
-    # 24. LUXALGO — RSI Divergence + EMA Confirmation + Volume Filter
+    # 24. LUXALGO - RSI Divergence + EMA Confirmation + Volume Filter
     # ─────────────────────────────────────────────────────────────────
 
     def lux_algo(self, df: pd.DataFrame) -> Tuple[int, float, str]:
@@ -167,7 +167,7 @@ class AdvancedStrategies:
         return SIGNAL_NONE, 0, ""
 
     # ─────────────────────────────────────────────────────────────────
-    # 25. NEWS MOMENTUM — Impulse + Continuation
+    # 25. NEWS MOMENTUM - Impulse + Continuation
     # ─────────────────────────────────────────────────────────────────
 
     def news_momentum(self, df: pd.DataFrame) -> Tuple[int, float, str]:
@@ -227,7 +227,7 @@ class AdvancedStrategies:
         return SIGNAL_NONE, 0, ""
 
     # ─────────────────────────────────────────────────────────────────
-    # 26. QUANTITATIVE / ALGO — Z-Score Mean Reversion + Half-Kelly
+    # 26. QUANTITATIVE / ALGO - Z-Score Mean Reversion + Half-Kelly
     # ─────────────────────────────────────────────────────────────────
 
     def quant_algo(self, df: pd.DataFrame) -> Tuple[int, float, str]:

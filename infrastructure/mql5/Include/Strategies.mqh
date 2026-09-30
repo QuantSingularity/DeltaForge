@@ -534,7 +534,7 @@ public:
    }
 
    //-------------------------------------------------------------------
-   // 24. LUXALGO — RSI Divergence + EMA Ribbon Confirmation
+   // 24. LUXALGO - RSI Divergence + EMA Ribbon Confirmation
    //    Bullish: price at/below recent swing low, RSI higher than it was there.
    //    Bearish: price at/above recent swing high, RSI lower than it was there.
    //    Secondary: full EMA ribbon momentum (EMA9 > EMA21 > EMA50 = bull).
@@ -608,7 +608,7 @@ public:
    }
 
    //-------------------------------------------------------------------
-   // 25. NEWS MOMENTUM — Large Impulse Candle + Volume Surge Continuation
+   // 25. NEWS MOMENTUM - Large Impulse Candle + Volume Surge Continuation
    //    Detects a sudden big-body candle (body > 1.8× ATR) with exceptional
    //    volume (> 2.2× 20-bar average).  Trades continuation if current
    //    price has not fully reversed.  Proxy for news-driven moves.
@@ -645,7 +645,7 @@ public:
    }
 
    //-------------------------------------------------------------------
-   // 26. QUANTITATIVE ALGO — Z-Score Mean Reversion
+   // 26. QUANTITATIVE ALGO - Z-Score Mean Reversion
    //    Computes a 20-bar rolling Z-score.  When Z-score exceeds ±1.8σ
    //    and is already pulling back toward the mean, signals a reversion.
    //    Also detects momentum continuation when price is strongly trending.

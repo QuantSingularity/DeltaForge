@@ -1,5 +1,5 @@
 """
-DeltaForge ml_engine — backward-compatibility shim.
+DeltaForge ml_engine - backward-compatibility shim.
 All classes have been moved to subdirectories:
   scoring/signal_scorer.py    → SignalScorer
   anomaly/anomaly_detector.py → AnomalyDetector

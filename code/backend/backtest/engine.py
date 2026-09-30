@@ -1,4 +1,4 @@
-"""DeltaForge — Walk-forward BacktestEngine."""
+"""DeltaForge - Walk-forward BacktestEngine."""
 
 """
 DeltaForge Backtest Engine
@@ -265,7 +265,7 @@ class BacktestEngine:
         return None, ""
 
     # ─────────────────────────────────────────────────────────────
-    # TRAIL BAR — uses configured trail type (not hardcoded %)
+    # TRAIL BAR - uses configured trail type (not hardcoded %)
     # ─────────────────────────────────────────────────────────────
     def _trail_bar(self, trade: BTTrade, bar, df: pd.DataFrame) -> Optional[float]:
         if not self.trail_cfg.get("enabled", True):

@@ -1,4 +1,4 @@
-"""DeltaForge — Trail Stop Engine (ATR/percent/dollar/time/volatility)."""
+"""DeltaForge - Trail Stop Engine (ATR/percent/dollar/time/volatility)."""
 
 import logging
 import time

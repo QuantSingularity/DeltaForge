@@ -1,5 +1,5 @@
 """
-DeltaForge — Trend strategies.
+DeltaForge - Trend strategies.
 """
 
 from typing import Tuple
@@ -20,7 +20,7 @@ from ..indicators import (
 
 
 class TrendStrategies:
-    """Mixin — composed into StrategyEngine."""
+    """Mixin - composed into StrategyEngine."""
 
     def ma_cross(self, df: pd.DataFrame) -> Tuple[int, float, str]:
         fast = _sma(df["close"], 10)

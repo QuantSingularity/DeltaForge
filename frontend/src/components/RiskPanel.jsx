@@ -66,7 +66,7 @@ export default function RiskPanel({ state }) {
           <div>
             <div className="eyebrow">Trail type</div>
             <div className="stat text-sm mt-0.5 uppercase text-warn">
-              {r.trail_type || "—"}
+              {r.trail_type || "-"}
             </div>
           </div>
           <div>

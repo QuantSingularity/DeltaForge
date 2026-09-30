@@ -3,7 +3,7 @@ import { dirBg, pct } from "../lib/format";
 const TIMEFRAMES = ["15m", "1h", "4h", "1d"];
 
 function SignalCell({ sig }) {
-  if (!sig) return <td className="cell text-center text-ink-faint">—</td>;
+  if (!sig) return <td className="cell text-center text-ink-faint">-</td>;
   return (
     <td className="cell text-center">
       <div

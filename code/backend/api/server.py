@@ -1,5 +1,5 @@
 """
-DeltaForge — FastAPI server.
+DeltaForge - FastAPI server.
 
 Exposes the live bot state to the React dashboard:
 

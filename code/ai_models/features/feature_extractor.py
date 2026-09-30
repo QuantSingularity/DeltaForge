@@ -1,5 +1,5 @@
 """
-DeltaForge — FeatureExtractor
+DeltaForge - FeatureExtractor
 Centralised, versioned feature engineering for all ML models.
 Produces a fixed-length numpy feature vector from an OHLCV DataFrame.
 """
@@ -39,48 +39,48 @@ class FeatureExtractor:
             return vec
 
         try:
-            # 0 — RSI normalised
+            # 0 - RSI normalised
             rsi = self._rsi(close)
             vec[0] = (float(rsi.iloc[-1]) - 50.0) / 50.0
 
-            # 1 — MACD histogram normalised
+            # 1 - MACD histogram normalised
             _, _, hist = self._macd(close)
             c = float(close.iloc[-1])
             vec[1] = float(hist.iloc[-1]) / c * 1e4 if c != 0 else 0.0
 
-            # 2 — Bollinger %b
+            # 2 - Bollinger %b
             upper, mid, lower = self._bollinger(close)
             bw = float(upper.iloc[-1]) - float(lower.iloc[-1])
             vec[2] = (c - float(lower.iloc[-1])) / bw if bw != 0 else 0.5
 
-            # 3 — ATR / close
+            # 3 - ATR / close
             atr = self._atr(df)
             vec[3] = float(atr.iloc[-1]) / c if c != 0 else 0.0
 
-            # 4 — Volume ratio
+            # 4 - Volume ratio
             avg_vol = float(df["volume"].iloc[-21:-1].mean())
             cur_vol = float(df["volume"].iloc[-1])
             vec[4] = cur_vol / avg_vol if avg_vol != 0 else 1.0
 
-            # 5 — EMA20 slope normalised
+            # 5 - EMA20 slope normalised
             ema20 = close.ewm(span=20, adjust=False).mean()
             slope = float(ema20.iloc[-1]) - float(ema20.iloc[-2])
             vec[5] = slope / c if c != 0 else 0.0
 
-            # 6 — ADX
+            # 6 - ADX
             adx, _, _ = self._adx(df)
             vec[6] = float(adx.iloc[-1]) / 100.0 if not pd.isna(adx.iloc[-1]) else 0.25
 
-            # 7 — Stochastic %K
+            # 7 - Stochastic %K
             k, _ = self._stochastic(df)
             vec[7] = float(k.iloc[-1]) / 100.0
 
-            # 8 — 10-bar price momentum
+            # 8 - 10-bar price momentum
             if len(close) >= 11:
                 prev = float(close.iloc[-11])
                 vec[8] = (c - prev) / prev if prev != 0 else 0.0
 
-            # 9 — confluence placeholder (filled by SignalScorer.score())
+            # 9 - confluence placeholder (filled by SignalScorer.score())
             vec[9] = 0.0
 
         except Exception:
@@ -90,7 +90,7 @@ class FeatureExtractor:
 
     def extract_batch(self, df: pd.DataFrame, lookback: int = 200) -> np.ndarray:
         """
-        Extract features for a rolling window — used during backtest training.
+        Extract features for a rolling window - used during backtest training.
         Returns shape (N, N_FEATURES).
         """
         rows = []

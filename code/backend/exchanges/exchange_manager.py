@@ -1,4 +1,4 @@
-"""DeltaForge — ExchangeManager: unified factory for all 10 exchanges."""
+"""DeltaForge - ExchangeManager: unified factory for all 10 exchanges."""
 
 """
 DeltaForge Exchange Manager
@@ -15,7 +15,7 @@ import ccxt
 logger = logging.getLogger("DeltaForge.Exchange")
 
 # ─────────────────────────────────────────────────────────────────────
-# SUPPORTED EXCHANGES (ccxt only — Bitflex uses BitflexAdapter directly)
+# SUPPORTED EXCHANGES (ccxt only - Bitflex uses BitflexAdapter directly)
 # ─────────────────────────────────────────────────────────────────────
 SUPPORTED_EXCHANGES = {
     "binance": ccxt.binance,

@@ -1,4 +1,4 @@
-"""DeltaForge — SignalScorer: logistic regression signal confidence (0-100%)."""
+"""DeltaForge - SignalScorer: logistic regression signal confidence (0-100%)."""
 
 import json
 import logging
@@ -172,7 +172,7 @@ class SignalScorer:
                 mom = float(close.iloc[-1] / close.iloc[-1 - mom_period] * 100 - 100)
                 feat[8] = np.clip(mom / 10, -1, 1)
 
-            # 9. Confluence — injected externally via score()
+            # 9. Confluence - injected externally via score()
             feat[9] = 0
 
         except Exception as e:
@@ -200,7 +200,7 @@ class SignalScorer:
         """
         Logistic regression via gradient descent.
         X: (n_samples, N_FEATURES)
-        y: (n_samples,) — 1 = profitable, 0 = not profitable
+        y: (n_samples,) - 1 = profitable, 0 = not profitable
         """
         n = len(y)
         weights = self.weights.copy()
